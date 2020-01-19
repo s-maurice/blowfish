@@ -5,12 +5,8 @@
   "main": "dist/blowfish.js",
   "types": "./egoroof-blowfish.d.ts",
   "scripts": {
-    "lint": "eslint src test tools",
-    "build": "npm run build:concat && npm run build:transpile && npm run build:wrap && npm run build:compress && node tools/distSize",
-    "build:concat": "rollup -f es -i src/Blowfish.js -o dist/blowfish.js",
-    "build:transpile": "babel dist/blowfish.js -o dist/blowfish.js",
-    "build:wrap": "rollup -f umd -n Blowfish -i dist/blowfish.js -o dist/blowfish.js",
-    "build:compress": "uglifyjs dist/blowfish.js -o dist/blowfish.js -m -c",
+    "lint": "eslint src test",
+    "build": "webpack",
     "test": "npm run lint && npm run build && npm run mocha",
     "mocha": "mocha",
     "preversion": "npm test",
@@ -43,12 +39,12 @@
   },
   "homepage": "https://github.com/egoroof/blowfish#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/cli": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "eslint": "^6.6.0",
-    "mocha": "^6.2.2",
-    "rollup": "^1.26.0",
-    "uglify-js": "^3.6.5"
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.8.0",
+    "mocha": "^7.0.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }

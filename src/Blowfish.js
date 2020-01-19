@@ -13,7 +13,7 @@ import {
 } from './helpers';
 import {TextDecoder} from '../lib/encoding';
 
-export default class Blowfish {
+export class Blowfish {
 
     static get MODE() {
         return MODE;

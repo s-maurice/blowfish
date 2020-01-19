@@ -1,6 +1,6 @@
 const assert = require('assert');
 const crypto = require('crypto');
-const Blowfish = require('../dist/blowfish');
+const {Blowfish} = require('../dist/blowfish');
 
 const defaultText = 'Encoded string';
 

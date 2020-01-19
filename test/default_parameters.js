@@ -1,5 +1,5 @@
 const assert = require('assert');
-const Blowfish = require('../dist/blowfish');
+const {Blowfish} = require('../dist/blowfish');
 
 describe('default parameters', () => {
     it('set ECB mode', () => {
