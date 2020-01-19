@@ -37,7 +37,7 @@ Strings support all unicode including emoji ✨.
 ### Example
 
 ```js
-const Blowfish = require('egoroof-blowfish');
+const {Blowfish} = require('egoroof-blowfish');
 const bf = new Blowfish('super key', Blowfish.MODE.ECB, Blowfish.PADDING.NULL); // only key isn't optional
 bf.setIv('abcdefgh'); // optional for ECB mode; bytes length should be equal 8
 
