@@ -75,7 +75,7 @@ export function pad(bytes, padding) {
     if (count === 8 && bytes.length > 0 && padding !== PADDING.PKCS5) {
         return bytes;
     }
-    const writer = new Uint8Array(bytes.length + count);
+    let writer = new Uint8Array(bytes.length + count);
     const newBytes = [];
     let remaining = count;
     let padChar = 0;
@@ -92,6 +92,11 @@ export function pad(bytes, padding) {
         }
         case PADDING.SPACES: {
             padChar = 0x20;
+            break;
+        }
+        case PADDING.NULL: {
+            remaining = 0;
+            writer = new Uint8Array(bytes.length);
             break;
         }
     }

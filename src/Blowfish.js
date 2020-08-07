@@ -91,10 +91,11 @@ export default class Blowfish {
 
         data = pad(toUint8Array(data), this.padding);
 
-        if (this.mode === MODE.ECB) {
-            return this._encodeECB(data);
-        } else if (this.mode === MODE.CBC) {
-            return this._encodeCBC(data);
+
+        switch (this.mode) {
+            case MODE.ECB: return this._encodeECB(data);
+            case MODE.CBC: return this._encodeCBC(data);
+            case MODE.CFB: return this._encodeCFB(data);
         }
     }
 
@@ -170,6 +171,45 @@ export default class Blowfish {
         let res = sumMod32(this.s[0][a], this.s[1][b]);
         res = xor(res, this.s[2][c]);
         return sumMod32(res, this.s[3][d]);
+    }
+
+    _encodeCFB(bytes) {
+        const encoded = new Uint8Array(bytes.length);
+
+        let prevL = packFourBytes(this.iv[0], this.iv[1], this.iv[2], this.iv[3]);
+        let prevR = packFourBytes(this.iv[4], this.iv[5], this.iv[6], this.iv[7]);
+
+        const extra_bytes = bytes.length % 8;
+
+        for (let i = 0; i < bytes.length-extra_bytes; i += 8) {
+            [prevL, prevR] = this._encryptBlock(prevL, prevR);
+            let l = packFourBytes(bytes[i], bytes[i + 1], bytes[i + 2], bytes[i + 3]);
+            let r = packFourBytes(bytes[i + 4], bytes[i + 5], bytes[i + 6], bytes[i + 7]);
+            [l, r] = [xor(prevL, l), xor(prevR, r)];
+
+            // set in
+            encoded.set(unpackFourBytes(l), i);
+            encoded.set(unpackFourBytes(r), i + 4);
+            // swap for next pass
+            [prevL, prevR] = [l, r];
+        }
+
+        // when padding mode null is used
+        if (extra_bytes > 0) {
+            [prevL, prevR] = this._encryptBlock(prevL, prevR);
+
+            // merge left and right together
+            const block = new Uint8Array(8);
+            block.set(unpackFourBytes(prevL), 0);
+            block.set(unpackFourBytes(prevR), 4);
+
+
+            for (let i = bytes.length-extra_bytes; i < bytes.length; i += 1) {
+                encoded.set([bytes[i] ^ block[i-bytes.length + extra_bytes]], i);
+            }
+        }
+
+        return encoded;
     }
 
     _encodeECB(bytes) {
